@@ -1,7 +1,7 @@
 {
   "name": "mediawiki-oauth-client-wordpress-plugin",
   "version": "1.0.0",
-  "description": "Wordpress plugin to enforce Wikimedia Foundation security polices within Wordpress VIP hosted sites",
+  "description": "WordPress plugin to enforce Wikimedia Foundation security polices within WordPress VIP hosted sites",
   "main": "index.js",
   "directories": {
     "lib": "lib"
