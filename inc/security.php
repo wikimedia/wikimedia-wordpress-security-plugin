@@ -2,7 +2,6 @@
 /**
  * Adding security functions.
  *
- * @package wikimedia-wordpress-security-plugin;
  */
 
 namespace WMF\Security;
