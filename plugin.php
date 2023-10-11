@@ -10,4 +10,8 @@
 namespace WMF\Security;
 
 require_once __DIR__ . '/inc/security.php';
-WMF\Security\init();
+require_once __DIR__ . '/inc/plugin-integration/jetpack.php';
+require_once __DIR__ . '/inc/csp.php';
+
+init();
+Plugin_Integration\Jetpack\bootstrap();
