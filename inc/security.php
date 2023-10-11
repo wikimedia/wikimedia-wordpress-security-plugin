@@ -9,7 +9,7 @@ namespace WMF\Security;
 /**
  * Booting up the security functionalities.
  */
-function init() {
+function bootstrap() {
 	add_action( 'send_headers', __NAMESPACE__ . '\\enable_strict_transport_security' ); // Making sure of HTTPS.
 	add_action( 'send_headers', __NAMESPACE__ . '\\set_content_security_policy' ); // Policy for content security.
 	add_action( 'send_headers', __NAMESPACE__ . '\\set_x_content_type_options' ); // Option of X Content Type.

@@ -3,7 +3,7 @@
  * Customize behavior of Jetpack to Wikimedia's standards.
  */
 
-namespace Wikimedia\Security\Plugin_Integration\Jetpack;
+namespace WMF\Security\Plugin_Integration\Jetpack;
 
 /**
  * Connect namespace methods to actions and filters.
