@@ -38,7 +38,7 @@ function add_csp_headers( array $headers, WP $wp  ) {
 	 *
 	 * @param string[] $allowed_origins List of *.domain.tld origins to allow in CSP directives.
 	 */
-	$allowed_origins = apply_filters( 'wikimedia/security/csp/allowed_origins', $allowed_origins );
+	$allowed_origins = apply_filters( 'wmf/security/csp/allowed_origins', $allowed_origins );
 
 	$allowed_origins = implode( ' ', $allowed_origins );
 
@@ -66,7 +66,7 @@ function add_csp_headers( array $headers, WP $wp  ) {
 	/**
 	 * Permit customization of CSP-related headers on a per-site basis.
 	 */
-	$csp_headers = apply_filters( 'wikimedia/security/csp/headers', $headers );
+	$csp_headers = apply_filters( 'wmf/security/csp/headers', $headers );
 
 	return array_merge( $headers, $csp_headers );
 }
