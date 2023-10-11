@@ -21,9 +21,9 @@
     "type": "git",
     "url": "git+https://github.com/wikimedia/wikimedia-wordpress-security-plugin.git"
   },
-    "engines": {
-        "node": ">=16.0.0"
-    },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "keywords": [
     "wordpress"
   ],
