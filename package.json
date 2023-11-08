@@ -1,30 +1,30 @@
 {
-  "name": "mediawiki-oauth-client-wordpress-plugin",
-  "version": "1.0.0",
-  "description": "WordPress plugin to enforce Wikimedia Foundation security polices within WordPress VIP hosted sites",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wikimedia/wikimedia-wordpress-security-plugin.git"
-  },
+    "name": "mediawiki-oauth-client-wordpress-plugin",
+    "version": "1.0.0",
+    "description": "WordPress plugin to enforce Wikimedia Foundation security polices within WordPress VIP hosted sites",
+    "main": "index.js",
+    "directories": {
+        "lib": "lib"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wikimedia/wikimedia-wordpress-security-plugin.git"
+    },
     "engines": {
         "node": ">=16.0.0"
     },
-  "keywords": [
+    "keywords": [
     "wordpress"
   ],
-  "author": "",
-  "license": "GPL-2.0-or-later",
-  "bugs": {
-    "url": "https://github.com/wikimedia/wikimedia-wordpress-security-plugin/issues"
-  },
-  "homepage": "https://github.com/wikimedia/wikimedia-wordpress-security-plugin#readme",
+    "author": "",
+    "license": "GPL-2.0-or-later",
+    "bugs": {
+        "url": "https://github.com/wikimedia/wikimedia-wordpress-security-plugin/issues"
+    },
+    "homepage": "https://github.com/wikimedia/wikimedia-wordpress-security-plugin#readme",
     "devDependencies": {
         "@humanmade/webpack-helpers": "^1.0.0-beta.15",
         "babel-eslint": "^10.1.0",
