@@ -4,6 +4,5 @@ vendor/
 *.DS_Store
 *.log
 *.sql
-composer.lock
 
 build/
