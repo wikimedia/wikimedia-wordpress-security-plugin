@@ -11,6 +11,7 @@
   "require-dev": {
     "automattic/vipwpcs": "^3.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+    "phpcompatibility/php-compatibility": "dev-develop as 9.99.99",
     "phpcompatibility/phpcompatibility-wp": "^2.1",
     "phpcsstandards/php_codesniffer": "^3.5",
     "staabm/annotate-pull-request-from-checkstyle": "^1.8",
