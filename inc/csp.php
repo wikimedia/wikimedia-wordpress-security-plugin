@@ -20,6 +20,7 @@ function bootstrap(): void {
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_video_service_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\maybe_add_local_dev_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_wikimedia_origins', 10, 2 );
+	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\set_connect_src_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allow_unsafe_inline', __NAMESPACE__ . '\\allow_unsafe_inline_scripts_styles', 10, 2 );
 	add_filter( 'wmf/security/csp/allow_data_uris', __NAMESPACE__ . '\\allow_data_uri_inline_assets', 10, 2 );
 }
