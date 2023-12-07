@@ -2,6 +2,7 @@
 /**
  * Manage Content-Security-Policy and related HTTP headers.
  */
+
 declare( strict_types=1 );
 
 namespace Wikimedia\Security\CSP;
@@ -11,7 +12,7 @@ use WP;
 /**
  * Connect namespace methods to actions and filters.
  */
-function bootstrap() : void {
+function bootstrap(): void {
 	add_filter( 'wp_headers', __NAMESPACE__ . '\\add_csp_headers', 900, 2 );
 }
 
@@ -22,7 +23,7 @@ function bootstrap() : void {
  * @param WP       $wp      Current WordPress environment instance.
  * @return string[] Updated HTTP headers array.
  */
-function add_csp_headers( array $headers, WP $wp  ) {
+function add_csp_headers( array $headers, WP $wp ) {
 	$allowed_origins = [
 		"'self'",
 		'*.wikimedia.org',
@@ -51,7 +52,7 @@ function add_csp_headers( array $headers, WP $wp  ) {
 		"style-src 'unsafe-inline' {$allowed_origins}",
 		"form-action 'self'",
 		"frame-ancestors 'none'",
-		"block-all-mixed-content",
+		'block-all-mixed-content',
 	];
 
 	$csp_headers = [

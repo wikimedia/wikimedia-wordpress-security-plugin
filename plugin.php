@@ -7,6 +7,8 @@
  * Version: 1.0.0
  */
 
+declare( strict_types=1 );
+
 namespace WMF\Security;
 
 require_once __DIR__ . '/inc/security.php';
