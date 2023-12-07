@@ -306,12 +306,6 @@
 		<severity>0</severity>
 	</rule>
 
-	<!--
-	HM Rules / HM RULEZZZZ
-
-	https://engineering.hmn.md/how-we-work/style/php/
-	-->
-
 	<!-- Disallow long array syntax. -->
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
 
@@ -342,6 +336,9 @@
 	<rule ref="Squiz.PHP.DisallowMultipleAssignments">
 		<exclude name="Squiz.PHP.DisallowMultipleAssignments.Found" />
 	</rule>
+
+	<!-- declare( strict_types=1 ); is required. -->
+	<rule ref="Generic.PHP.RequireStrictTypes" />
 
 	<!-- Require proper docblocks be used in all PHP files -->
 	<rule ref="WordPress-Docs">
