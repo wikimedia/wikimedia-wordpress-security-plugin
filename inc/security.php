@@ -1,8 +1,9 @@
 <?php
 /**
  * Adding security functions.
- *
  */
+
+declare( strict_types=1 );
 
 namespace WMF\Security;
 
