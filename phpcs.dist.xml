@@ -214,7 +214,7 @@
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning" />
 
 		<!-- We like short arrays and ternaries around here -->
-		<exclude name="Generic.Arrays.DisallowShortArraySyntax" />
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
 		<exclude name="Universal.Operators.DisallowShortTernary" />
 
 		<!--
@@ -249,7 +249,7 @@
 	<!-- Allow . in hook names. -->
 	<rule ref="WordPress.NamingConventions.ValidHookName">
 		<properties>
-			<property name="additionalWordDelimiters" value="." />
+			<property name="additionalWordDelimiters" value="/" />
 		</properties>
 	</rule>
 
@@ -349,6 +349,9 @@
 		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop" />
 		<exclude name="Squiz.Commenting.FunctionComment.ThrowsNoFullStop" />
 		<exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType" />
+
+		<!-- Commenting hygiene is nice, but this excludes too many valid comment syntaxes. -->
+		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar" />
 	</rule>
 
 </ruleset>
