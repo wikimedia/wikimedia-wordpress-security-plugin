@@ -14,6 +14,7 @@ use WP;
  */
 function bootstrap(): void {
 	add_filter( 'wp_headers', __NAMESPACE__ . '\\add_csp_headers', 900, 2 );
+	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\maybe_add_local_dev_origins' );
 }
 
 /**
@@ -37,7 +38,7 @@ function add_csp_headers( array $headers, WP $wp ) {
 	/**
 	 * Permit customizations to CSP allowed origins on a per-site basis.
 	 *
-	 * @param string[] $allowed_origins List of *.domain.tld origins to allow in CSP directives.
+	 * @param string[] $allowed_origins List of origins to allow in CSP directives.
 	 */
 	$allowed_origins = apply_filters( 'wmf/security/csp/allowed_origins', $allowed_origins );
 
@@ -70,4 +71,29 @@ function add_csp_headers( array $headers, WP $wp ) {
 	$csp_headers = apply_filters( 'wmf/security/csp/headers', $headers );
 
 	return array_merge( $headers, $csp_headers );
+}
+
+/**
+ * When the environment type is "local", add localhost origins to CSP headers.
+ *
+ * @param string[] $allowed_origins List of origins to allow in CSP directives.
+ * @return string[]
+ */
+function maybe_add_local_dev_origins( array $allowed_origins ) : array {
+	if ( wp_get_environment_type() !== 'local' ) {
+		return $allowed_origins;
+	}
+
+	foreach ( [
+		'http://localhost',
+		'https://localhost',
+		'http://localhost:8080',
+		'https://localhost:8080',
+		'http://localhost:9090',
+		'https://localhost:9090',
+	] as $local_dev_origin ) {
+		$allowed_origins[] = $local_dev_origin;
+	}
+
+	return $allowed_origins;
 }
