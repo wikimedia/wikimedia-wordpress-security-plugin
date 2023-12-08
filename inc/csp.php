@@ -5,7 +5,7 @@
 
 declare( strict_types=1 );
 
-namespace Wikimedia\Security\CSP;
+namespace WMF\Security\CSP;
 
 use WP;
 
@@ -13,7 +13,7 @@ use WP;
  * Connect namespace methods to actions and filters.
  */
 function bootstrap(): void {
-	add_filter( 'wp_headers', __NAMESPACE__ . '\\add_csp_headers', 900, 2 );
+	add_filter( 'wp_headers', __NAMESPACE__ . '\\add_csp_headers', 900 );
 
 	// Per-policy customizations.
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_vip_origin', 10, 2 );
@@ -71,7 +71,7 @@ function render_csp_directives_string( string $policy_type ): string {
 	array_unshift( $allowed_origins, "'self'" );
 
 	// Prefix with policy type, and return complete policy directives string.
-	return "$policy_type " . implode( $allowed_origins );
+	return "$policy_type " . implode( ' ', $allowed_origins );
 }
 
 
@@ -241,17 +241,16 @@ function allow_unsafe_inline_scripts_styles( bool $allow_unsafe_inline, string $
  * @return bool Filtered permission flag.
  */
 function allow_data_uri_inline_assets( bool $allow_data_uris, string $policy_type ): bool {
-	return $allow_data_uris || in_array( $policy_type, [ 'script-src', 'style-src' ], true );
+	return $allow_data_uris || in_array( $policy_type, [ 'img-src', 'font-src' ], true );
 }
 
 /**
  * Filters the HTTP headers before they're sent to the browser.
  *
  * @param string[] $headers Associative array of headerd to set.
- * @param WP       $wp      Current WordPress environment instance.
  * @return string[] Updated HTTP headers array.
  */
-function add_csp_headers( array $headers, WP $wp ) {
+function add_csp_headers( array $headers ) {
 	// For each policy type, pass it through several filters to customize
 	// the origins and instructions each specific type of policy permits.
 	$csp_src_policies = array_map(
