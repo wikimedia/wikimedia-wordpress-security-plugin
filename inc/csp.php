@@ -7,8 +7,6 @@ declare( strict_types=1 );
 
 namespace WMF\Security\CSP;
 
-use WP;
-
 /**
  * Connect namespace methods to actions and filters.
  */
