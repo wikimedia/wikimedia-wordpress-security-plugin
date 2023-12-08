@@ -15,7 +15,7 @@ use WP;
 function bootstrap(): void {
 	add_filter( 'wp_headers', __NAMESPACE__ . '\\add_csp_headers', 900, 2 );
 
-	// Per-directive customizations.
+	// Per-policy customizations.
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_vip_origin', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_video_service_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\maybe_add_local_dev_origins', 10, 2 );
@@ -26,12 +26,12 @@ function bootstrap(): void {
 }
 
 /**
- * Apply filters to each CSP type and render the fully-formed directive.
+ * Apply filters to each CSP type and render the fully-formed policy directives.
  *
  * @param string $policy_type Type of policy being rendered, e.g. 'default-src' or 'script-src'.
  * @return string Fully-formed CSP `...-src` policy directive string.
  */
-function render_filtered_csp_directive( string $policy_type ): string {
+function render_csp_directives_string( string $policy_type ): string {
 	/**
 	 * Customize allowed origins for a ...-src CSP.
 	 *
@@ -48,9 +48,9 @@ function render_filtered_csp_directive( string $policy_type ): string {
 	);
 
 	/**
-	 * Filter whether 'unsafe-inline' should be permitted in this directive (false by default).
+	 * Filter whether 'unsafe-inline' should be permitted in this policy (false by default).
 	 *
-	 * @param bool   $allow_unsafe_inline Whether to include 'unsafe-inline' in the directive.
+	 * @param bool   $allow_unsafe_inline Whether to include 'unsafe-inline' in the policy.
 	 * @param string $policy_type         CSP type.
 	 */
 	if ( apply_filters( 'wmf/security/csp/allow_unsafe_inline', false, $policy_type ) ) {
@@ -58,9 +58,9 @@ function render_filtered_csp_directive( string $policy_type ): string {
 	}
 
 	/**
-	 * Filter whether data: URIs should be permitted in this directive (false by default).
+	 * Filter whether data: URIs should be permitted in this policy (false by default).
 	 *
-	 * @param bool   $allow_data_uris Whether to include data: in the directive.
+	 * @param bool   $allow_data_uris Whether to include data: in the policy.
 	 * @param string $policy_type     CSP type.
 	 */
 	if ( apply_filters( 'wmf/security/csp/allow_data_uris', false, $policy_type ) ) {
@@ -70,7 +70,7 @@ function render_filtered_csp_directive( string $policy_type ): string {
 	// Always allow 'self'.
 	array_unshift( $allowed_origins, "'self'" );
 
-	// Prefix with directive type, and return complete directive.
+	// Prefix with policy type, and return complete policy directives string.
 	return "$policy_type " . implode( $allowed_origins );
 }
 
@@ -103,11 +103,11 @@ function validate_and_sanitize_csp_origin( string $url ): string {
 
 
 /**
- * Add *.wp.com origin to relevant directives.
+ * Add *.wp.com origin to relevant policies.
  *
  * @param string[] $allowed_origins List of origins to allow in this CSP.
  * @param string   $policy_type     CSP type.
- * @return string[] Filtered directive array.
+ * @return string[] Filtered policy allowed origins array.
  */
 function allow_vip_origin( array $allowed_origins, string $policy_type ): array {
 	if ( in_array( $policy_type, [ 'frame-src', 'img-src', 'font-src', 'script-src', 'style-src' ], true ) ) {
@@ -122,7 +122,7 @@ function allow_vip_origin( array $allowed_origins, string $policy_type ): array 
  *
  * @param string[] $allowed_origins List of origins to allow in this CSP.
  * @param string   $policy_type     CSP type.
- * @return string[] Filtered directive array.
+ * @return string[] Filtered policy allowed origins array.
  */
 function allow_video_service_origins( array $allowed_origins, string $policy_type ): array {
 	if ( in_array( $policy_type, [ 'frame-src', 'script-src' ], true ) ) {
@@ -137,7 +137,7 @@ function allow_video_service_origins( array $allowed_origins, string $policy_typ
  *
  * @param string[] $allowed_origins List of origins to allow in this CSP.
  * @param string   $policy_type     CSP type.
- * @return string[] Filtered directive array.
+ * @return string[] Filtered policy allowed origins array.
  */
 function allow_wikimedia_origins( array $allowed_origins, string $policy_type ): array {
 	if ( in_array( $policy_type, [ 'script-src', 'style-src', 'img-src' ], true ) ) {
@@ -151,7 +151,7 @@ function allow_wikimedia_origins( array $allowed_origins, string $policy_type ):
  *
  * @param string[] $allowed_origins List of origins to allow in this CSP.
  * @param string   $policy_type     CSP type.
- * @return string[] Filtered directive array.
+ * @return string[] Filtered policy allowed origins array.
  */
 function set_connect_src_origins( array $allowed_origins, string $policy_type ): array {
 	if ( $policy_type === 'connect-src' ) {
@@ -166,7 +166,7 @@ function set_connect_src_origins( array $allowed_origins, string $policy_type ):
  *
  * @param string[] $allowed_origins List of origins to allow in this CSP.
  * @param string   $policy_type     CSP type.
- * @return string[] Filtered directive array.
+ * @return string[] Filtered policy allowed origins array.
  */
 function maybe_add_local_dev_origins( array $allowed_origins, string $policy_type ): array {
 	if ( wp_get_environment_type() !== 'local' ) {
@@ -224,8 +224,8 @@ function maybe_add_local_dev_origins( array $allowed_origins, string $policy_typ
  * Please make a note that both strategies will demand substantial effort and testing to make
  * sure that functionality of site remains not affected.
  *
- * @param bool   $allow_unsafe_inline Whether to include 'unsafe-inline' in the directive.
- * @param string $policy_type      CSP type.
+ * @param bool   $allow_unsafe_inline Whether to include 'unsafe-inline' directive in the policy.
+ * @param string $policy_type         CSP type.
  * @return bool Filtered permission flag.
  */
 function allow_unsafe_inline_scripts_styles( bool $allow_unsafe_inline, string $policy_type ): bool {
@@ -236,7 +236,7 @@ function allow_unsafe_inline_scripts_styles( bool $allow_unsafe_inline, string $
 /**
  * Permit inlined data: URIs in image tags and font references.
  *
- * @param bool   $allow_data_uris Whether to include data: in the directive.
+ * @param bool   $allow_data_uris Whether to include data: directive in the policy.
  * @param string $policy_type     CSP type.
  * @return bool Filtered permission flag.
  */
@@ -252,10 +252,10 @@ function allow_data_uri_inline_assets( bool $allow_data_uris, string $policy_typ
  * @return string[] Updated HTTP headers array.
  */
 function add_csp_headers( array $headers, WP $wp ) {
-	// For each directive type, pass it through several filters to customize
+	// For each policy type, pass it through several filters to customize
 	// the origins and instructions each specific type of policy permits.
-	$csp_src_directives = array_map(
-		__NAMESPACE__ . '\\render_filtered_csp_directive',
+	$csp_src_policies = array_map(
+		__NAMESPACE__ . '\\render_csp_directives_string',
 		[
 			'default-src',
 			'connect-src',
@@ -267,8 +267,8 @@ function add_csp_headers( array $headers, WP $wp ) {
 		]
 	);
 
-	// These directives cannot be filtered.
-	$csp_invariate_directives = [
+	// These policies cannot be filtered.
+	$csp_invariate_policies = [
 		"base-uri 'self'",
 		"form-action 'self'",
 		"frame-ancestors 'none'",
@@ -276,7 +276,7 @@ function add_csp_headers( array $headers, WP $wp ) {
 	];
 
 	$csp_headers = [
-		'Content-Security-Policy' => implode( '; ', array_merge( $csp_src_directives, $csp_invariate_directives ) ),
+		'Content-Security-Policy' => implode( '; ', array_merge( $csp_src_policies, $csp_invariate_policies ) ),
 		'X-Frame-Options'         => 'deny',
 		'X-XSS-Protection'        => '1; mode=block',
 		'X-Content-Type-Options'  => 'nosniff',
