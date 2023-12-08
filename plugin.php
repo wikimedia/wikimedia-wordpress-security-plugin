@@ -11,9 +11,9 @@ declare( strict_types=1 );
 
 namespace WMF\Security;
 
-require_once __DIR__ . '/inc/security.php';
+require_once __DIR__ . '/inc/http-headers.php';
 require_once __DIR__ . '/inc/plugin-integration/jetpack.php';
 require_once __DIR__ . '/inc/csp.php';
 
-bootstrap();
+HTTP_Headers\bootstrap();
 Plugin_Integration\Jetpack\bootstrap();
