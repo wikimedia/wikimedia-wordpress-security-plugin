@@ -15,5 +15,6 @@ require_once __DIR__ . '/inc/http-headers.php';
 require_once __DIR__ . '/inc/plugin-integration/jetpack.php';
 require_once __DIR__ . '/inc/csp.php';
 
+CSP\bootstrap();
 HTTP_Headers\bootstrap();
 Plugin_Integration\Jetpack\bootstrap();
