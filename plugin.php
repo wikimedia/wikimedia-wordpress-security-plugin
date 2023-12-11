@@ -17,3 +17,6 @@ require_once __DIR__ . '/inc/csp.php';
 
 HTTP_Headers\bootstrap();
 Plugin_Integration\Jetpack\bootstrap();
+
+// Activate bundled plugins.
+require_once __DIR__ . '/inc/bundled-plugins/disable-emojis/disable-emojis.php';
