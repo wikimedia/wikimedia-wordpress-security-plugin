@@ -55,6 +55,20 @@ function render_csp_directives_string( string $policy_type ): string {
 		array_unshift( $allowed_origins, "'unsafe-inline'" );
 	}
 
+	if ( $policy_type === 'script-src' ) {
+		/**
+		 * Filter whether 'unsafe-eval' should be permitted in the script-src policy (false by default).
+		 *
+		 * Only enable if necessary for site functionality.
+		 *
+		 * @param bool   $allow_unsafe_eval Whether to include 'unsafe-eval' in the script-src policy.
+		 * @param string $policy_type       CSP type.
+		 */
+		if ( apply_filters( 'wmf/security/csp/allow_unsafe_eval', false, $policy_type ) ) {
+			array_unshift( $allowed_origins, "'unsafe-eval'" );
+		}
+	}
+
 	/**
 	 * Filter whether data: URIs should be permitted in this policy (false by default).
 	 *
