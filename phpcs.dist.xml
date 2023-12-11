@@ -12,6 +12,7 @@
 	before the plugin was excluded from checks to confirm they are purely
 	stylistic issues and do not represent security risks.
 	-->
+	<exclude-pattern>inc/bundled-plugins/disable-emojis</exclude-pattern>
 
 	<arg name="extensions" value="php" />
 
