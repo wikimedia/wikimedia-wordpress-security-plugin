@@ -5,6 +5,14 @@
 	<exclude-pattern>node_modules/*</exclude-pattern>
 	<exclude-pattern>vendor/*</exclude-pattern>
 
+	<!--
+	Third-party plugins bundled into this project are not required to match
+	all of this project's stylistic rules.
+	PHPCS warnings on all plugins listed here have been individually reviewed
+	before the plugin was excluded from checks to confirm they are purely
+	stylistic issues and do not represent security risks.
+	-->
+
 	<arg name="extensions" value="php" />
 
 	<!-- Check for PHP cross-version compatibility. -->
