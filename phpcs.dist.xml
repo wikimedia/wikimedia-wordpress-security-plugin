@@ -5,6 +5,15 @@
 	<exclude-pattern>node_modules/*</exclude-pattern>
 	<exclude-pattern>vendor/*</exclude-pattern>
 
+	<!--
+	Third-party plugins bundled into this project are not required to match
+	all of this project's stylistic rules.
+	PHPCS warnings on all plugins listed here have been individually reviewed
+	before the plugin was excluded from checks to confirm they are purely
+	stylistic issues and do not represent security risks.
+	-->
+	<exclude-pattern>inc/bundled-plugins/disable-emojis</exclude-pattern>
+
 	<arg name="extensions" value="php" />
 
 	<!-- Check for PHP cross-version compatibility. -->
@@ -99,10 +108,6 @@
 
 	<!-- Require correct usage of WP's i18n functions. -->
 	<rule ref="WordPress.WP.I18n">
-		<properties>
-			<property name="check_translator_comments" value="false" />
-		</properties>
-
 		<!-- Allow empty strings to be translated (e.g. space character) -->
 		<exclude name="WordPress.WP.I18n.NoEmptyStrings" />
 	</rule>
@@ -254,20 +259,7 @@
 	</rule>
 
 	<!-- Ease up on the PHP DOM* objects. -->
-	<rule ref="WordPress.NamingConventions.ValidVariableName">
-		<properties>
-			<property name="customPropertiesWhitelist" type="array">
-				<!-- DOMDocument::$documentElement -->
-				<element value="documentElement" />
-				<!-- DOMElement::$childElementCount -->
-				<element value="childElementCount" />
-				<!-- DOMElement::$parentNode -->
-				<element value="parentNode" />
-				<!-- DOMNode::$childNodes -->
-				<element value="childNodes" />
-			</property>
-		</properties>
-	</rule>
+	<rule ref="WordPress.NamingConventions.ValidVariableName" />
 
 	<rule ref="WordPress.Security.PluginMenuSlug" />
 	<rule ref="WordPress.Security.PluginMenuSlug.Using__FILE__">
