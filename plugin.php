@@ -21,3 +21,6 @@ CSP\bootstrap();
 HTTP_Headers\bootstrap();
 Plugin_Integration\Jetpack\bootstrap();
 REST_API\bootstrap();
+
+// Activate bundled plugins.
+require_once __DIR__ . '/inc/bundled-plugins/disable-emojis/disable-emojis.php';
