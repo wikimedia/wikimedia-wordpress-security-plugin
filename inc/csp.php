@@ -16,6 +16,7 @@ function bootstrap(): void {
 	// Per-policy customizations.
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_vip_origin', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_video_service_origins', 10, 2 );
+	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_google_fonts_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\maybe_add_local_dev_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_wikimedia_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\set_connect_src_origins', 10, 2 );
@@ -141,6 +142,25 @@ function allow_video_service_origins( array $allowed_origins, string $policy_typ
 		$allowed_origins[] = 'https://www.youtube.com';
 		$allowed_origins[] = 'https://player.vimeo.com';
 	}
+	return $allowed_origins;
+}
+
+/**
+ * Add Google Fonts origins for style-src and font-src directives.
+ *
+ * @param string[] $allowed_origins List of origins to allow in this CSP.
+ * @param string   $policy_type     CSP type.
+ * @return string[] Filtered policy allowed origins array.
+ */
+function allow_google_fonts_origins( array $allowed_origins, string $policy_type ): array {
+	if ( $policy_type === 'style-src' ) {
+		$allowed_origins[] = 'https://fonts.googleapis.com';
+	}
+
+	if ( $policy_type === 'font-src' ) {
+		$allowed_origins[] = 'https://fonts.gstatic.com';
+	}
+
 	return $allowed_origins;
 }
 
