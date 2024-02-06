@@ -145,7 +145,8 @@ function allow_video_service_origins( array $allowed_origins, string $policy_typ
 }
 
 /**
- * Permit certain resources from *.wikimedia.org necessary for Matomo tracking.
+ * Permit resources from *.wikimedia.org and wikimediafoundation.org
+ * necessary for Matomo tracking and images.
  *
  * @param string[] $allowed_origins List of origins to allow in this CSP.
  * @param string   $policy_type     CSP type.
@@ -154,7 +155,15 @@ function allow_video_service_origins( array $allowed_origins, string $policy_typ
 function allow_wikimedia_origins( array $allowed_origins, string $policy_type ): array {
 	if ( in_array( $policy_type, [ 'script-src', 'style-src', 'img-src' ], true ) ) {
 		$allowed_origins[] = 'https://*.wikimedia.org';
+		$allowed_origins[] = 'https://wikipedia.org';
 	}
+
+	// Explicitly allow images from wikimediafoundation.org uploads directory
+	if ( $policy_type === 'img-src' ) {
+		$allowed_origins[] = 'https://wikimediafoundation.org';
+		$allowed_origins[] = 'https://wikimediafoundation.org/wp-content/uploads';
+	}
+
 	return $allowed_origins;
 }
 
