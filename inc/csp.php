@@ -155,6 +155,7 @@ function allow_video_service_origins( array $allowed_origins, string $policy_typ
 function allow_wikimedia_origins( array $allowed_origins, string $policy_type ): array {
 	if ( in_array( $policy_type, [ 'script-src', 'style-src', 'img-src' ], true ) ) {
 		$allowed_origins[] = 'https://*.wikimedia.org';
+		$allowed_origins[] = 'https://wikipedia.org';
 	}
 
 	// Explicitly allow images from wikimediafoundation.org uploads directory
