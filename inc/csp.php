@@ -109,7 +109,7 @@ function validate_and_sanitize_csp_origin( string $url ): string {
 		return '';
 	}
 
-	$port = ! empty( $components['port'] ) ? ( '' . $components['port'] ) : '';
+	$port = ! empty( $components['port'] ) ? ( ':' . $components['port'] ) : '';
 	return sprintf( '%s://%s%s', $scheme, $host, $port );
 }
 
