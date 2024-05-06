@@ -104,8 +104,13 @@ function validate_and_sanitize_csp_origin( string $url ): string {
 		return '';
 	}
 
-	if ( ! in_array( $scheme, [ 'http', 'https', 'wss' ], true ) ) {
-		// Only support http:, https:, and wss: schemes at this time.
+	// Only support https:, and wss: schemes at this time.
+	// Permit less-secure http and ws connections only in local environments.
+	$allowed_schemes = [ 'https', 'wss' ];
+	if ( wp_get_environment_type() === 'local' ) {
+		$allowed_schemes = [ ...$allowed_schemes, 'http', 'ws' ];
+	}
+	if ( ! in_array( $scheme, $allowed_schemes, true ) ) {
 		return '';
 	}
 
