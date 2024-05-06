@@ -309,6 +309,7 @@ function add_csp_headers( array $headers ) {
 		"base-uri 'self'",
 		"form-action 'self'",
 		"frame-ancestors 'none'",
+		"object-src 'none'",
 		'block-all-mixed-content',
 	];
 
