@@ -192,7 +192,7 @@ function allow_wikimedia_origins( array $allowed_origins, string $policy_type ):
  */
 function set_connect_src_origins( array $allowed_origins, string $policy_type ): array {
 	if ( $policy_type === 'connect-src' ) {
-		return [ 'https://*.wikipedia.org', 'wss://*.wordpress.com' ];
+		return [ 'https://*.wikipedia.org', 'https://*.wikimedia.org', 'wss://*.wordpress.com' ];
 	}
 	return $allowed_origins;
 }
