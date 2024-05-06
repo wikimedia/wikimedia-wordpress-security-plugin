@@ -300,6 +300,7 @@ function add_csp_headers( array $headers ) {
 			'img-src',
 			'script-src',
 			'style-src',
+			'worker-src',
 		]
 	);
 
