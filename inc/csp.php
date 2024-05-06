@@ -199,8 +199,8 @@ function set_connect_src_origins( array $allowed_origins, string $policy_type ):
 }
 
 /**
- * When the environment type is "local", add localhost origins to CSP headers
- * and permit proxying media requests through to deployed environment.
+ * When the environment type is "local", add localhost origins with commonly-
+ * used ports to CSP headers.
  *
  * @param string[] $allowed_origins List of origins to allow in this CSP.
  * @param string   $policy_type     CSP type.
@@ -222,16 +222,6 @@ function maybe_add_local_dev_origins( array $allowed_origins, string $policy_typ
 		] as $local_dev_origin ) {
 			$allowed_origins[] = $local_dev_origin;
 		}
-	}
-
-	if ( $policy_type === 'img-src' ) {
-		/**
-		 * Permit proxying images through to production or to preprod.
-		 *
-		 * @see https://docs.wpvip.com/how-tos/dev-env-add-media/#h-proxy-media-files
-		 */
-		$allowed_origins[] = 'https://wikimediafoundation.org';
-		$allowed_origins[] = 'https://wikimediafoundation-org-preprod.go-vip.net';
 	}
 
 	return $allowed_origins;
