@@ -8,9 +8,9 @@ declare( strict_types=1 );
 namespace WMF\Security\CSP;
 
 // Maintain a list of permitted non-URL-shaped source keywords for use in policy directives.
-// Does not include 'self', which we allow by default on filtered directives.
 // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy.
 const KEYWORD_SOURCE_VALUES = [
+	"'self'", // Allow resources from the current origin.
 	"'none'", // Won't allow loading of any resources.
 	"'strict-dynamic'", // Extend trust granted to a script on the page to scripts it loads.
 	"'report-sample'", // Require a sample of violating code to be included in violation reports.
@@ -42,12 +42,12 @@ function bootstrap(): void {
  */
 function render_csp_directives_string( string $policy_type ): string {
 	/**
-	 * Customize allowed origins for a ...-src CSP.
+	 * Customize allowed origins for a ...-src CSP. Always start with 'self'.
 	 *
 	 * @param string[] $allowed_origins List of origins to allow in this CSP.
 	 * @param string   $policy_type     CSP type.
 	 */
-	$allowed_origins = apply_filters( 'wmf/security/csp/allowed_origins', [], $policy_type );
+	$allowed_origins = apply_filters( 'wmf/security/csp/allowed_origins', [ "'self'" ], $policy_type );
 
 	// Strip out entries that the validator returned as empty.
 	$allowed_origins = array_filter(
@@ -89,9 +89,6 @@ function render_csp_directives_string( string $policy_type ): string {
 	if ( apply_filters( 'wmf/security/csp/allow_data_uris', false, $policy_type ) ) {
 		array_unshift( $allowed_origins, 'data:' );
 	}
-
-	// Always allow 'self'.
-	array_unshift( $allowed_origins, "'self'" );
 
 	// Prefix with policy type, and return complete policy directives string.
 	return "$policy_type " . implode( ' ', $allowed_origins );
