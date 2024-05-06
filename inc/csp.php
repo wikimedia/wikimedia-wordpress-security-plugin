@@ -7,6 +7,16 @@ declare( strict_types=1 );
 
 namespace WMF\Security\CSP;
 
+// Maintain a list of permitted non-URL-shaped source keywords for use in policy directives.
+// Does not include 'self', which we allow by default on filtered directives.
+// See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy.
+const KEYWORD_SOURCE_VALUES = [
+	"'none'", // Won't allow loading of any resources.
+	"'strict-dynamic'", // Extend trust granted to a script on the page to scripts it loads.
+	"'report-sample'", // Require a sample of violating code to be included in violation reports.
+	"'inline-speculation-rules'", // Allows the inclusion of speculation rules in scripts.
+];
+
 /**
  * Connect namespace methods to actions and filters.
  */
@@ -88,12 +98,22 @@ function render_csp_directives_string( string $policy_type ): string {
 
 
 /**
- * Validate and sanitize the provided URL.
+ * Validate and sanitize the provided origin URL or source value.
  *
  * @param string $url CSP origin URL.
  * @return string Filtered and sanitized URL, or '' if not permitted/not valid.
  */
 function validate_and_sanitize_csp_origin( string $url ): string {
+	// Permit valid CSP source values.
+	if ( in_array( $url, KEYWORD_SOURCE_VALUES, true ) ) {
+		return $url;
+	}
+	// Keyword source values require single quotes, so check that valid strings
+	// like "none" were not accidentally passed in without those quotes.
+	if ( in_array( "'$url'", KEYWORD_SOURCE_VALUES, true ) ) {
+		return "'$url'";
+	}
+
 	$components = parse_url( esc_url( $url ) );
 
 	$host   = $components['host'] ?? '';
