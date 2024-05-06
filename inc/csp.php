@@ -15,6 +15,7 @@ const KEYWORD_SOURCE_VALUES = [
 	"'strict-dynamic'", // Extend trust granted to a script on the page to scripts it loads.
 	"'report-sample'", // Require a sample of violating code to be included in violation reports.
 	"'inline-speculation-rules'", // Allows the inclusion of speculation rules in scripts.
+	'blob:', // Not a keyword per se, but a valid URL scheme source for worker-src specifically.
 ];
 
 /**
