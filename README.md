@@ -21,7 +21,7 @@ add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\permit_custom
  * @return string[] Filtered list of permitted origins.
  */
 function permit_custom_video_provider( array $allowed_origins, string $policy_type ) : array {
-	if ( in_array( $policy_type, [ 'script-src', 'frame-src' ], true ) {
+	if ( in_array( $policy_type, [ 'script-src', 'frame-src' ], true ) ) {
 		$allowed_origins[] = 'https://player.necessary-video-service.com';
 	}
 	return $allowed_origins;

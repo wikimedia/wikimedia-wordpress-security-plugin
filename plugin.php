@@ -4,7 +4,7 @@
  * Description: Deploys security related code to Wikimedia Foundation sites hosted on WordPress VIP.
  * Author: The Wikimedia Foundation and Human Made
  * Author URI: https://github.com/wikimedia/wikimedia-wordpress-security-plugin/graphs/contributors
- * Version: 1.0.0
+ * Version: 1.1.0
  * Text Domain: wikimedia-security
  */
 

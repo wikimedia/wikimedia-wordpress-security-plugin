@@ -7,6 +7,17 @@ declare( strict_types=1 );
 
 namespace WMF\Security\CSP;
 
+// Maintain a list of permitted non-URL-shaped source keywords for use in policy directives.
+// See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy.
+const KEYWORD_SOURCE_VALUES = [
+	"'self'", // Allow resources from the current origin.
+	"'none'", // Won't allow loading of any resources.
+	"'strict-dynamic'", // Extend trust granted to a script on the page to scripts it loads.
+	"'report-sample'", // Require a sample of violating code to be included in violation reports.
+	"'inline-speculation-rules'", // Allows the inclusion of speculation rules in scripts.
+	'blob:', // Not a keyword per se, but a valid URL scheme source for worker-src specifically.
+];
+
 /**
  * Connect namespace methods to actions and filters.
  */
@@ -31,12 +42,12 @@ function bootstrap(): void {
  */
 function render_csp_directives_string( string $policy_type ): string {
 	/**
-	 * Customize allowed origins for a ...-src CSP.
+	 * Customize allowed origins for a ...-src CSP. Always start with 'self'.
 	 *
 	 * @param string[] $allowed_origins List of origins to allow in this CSP.
 	 * @param string   $policy_type     CSP type.
 	 */
-	$allowed_origins = apply_filters( 'wmf/security/csp/allowed_origins', [], $policy_type );
+	$allowed_origins = apply_filters( 'wmf/security/csp/allowed_origins', [ "'self'" ], $policy_type );
 
 	// Strip out entries that the validator returned as empty.
 	$allowed_origins = array_filter(
@@ -79,21 +90,28 @@ function render_csp_directives_string( string $policy_type ): string {
 		array_unshift( $allowed_origins, 'data:' );
 	}
 
-	// Always allow 'self'.
-	array_unshift( $allowed_origins, "'self'" );
-
 	// Prefix with policy type, and return complete policy directives string.
 	return "$policy_type " . implode( ' ', $allowed_origins );
 }
 
 
 /**
- * Validate and sanitize the provided URL.
+ * Validate and sanitize the provided origin URL or source value.
  *
  * @param string $url CSP origin URL.
  * @return string Filtered and sanitized URL, or '' if not permitted/not valid.
  */
 function validate_and_sanitize_csp_origin( string $url ): string {
+	// Permit valid CSP source values.
+	if ( in_array( $url, KEYWORD_SOURCE_VALUES, true ) ) {
+		return $url;
+	}
+	// Keyword source values require single quotes, so check that valid strings
+	// like "none" were not accidentally passed in without those quotes.
+	if ( in_array( "'$url'", KEYWORD_SOURCE_VALUES, true ) ) {
+		return "'$url'";
+	}
+
 	$components = parse_url( esc_url( $url ) );
 
 	$host   = $components['host'] ?? '';
@@ -104,12 +122,17 @@ function validate_and_sanitize_csp_origin( string $url ): string {
 		return '';
 	}
 
-	if ( ! in_array( $scheme, [ 'http', 'https', 'wss' ], true ) ) {
-		// Only support http:, https:, and wss: schemes at this time.
+	// Only support https:, and wss: schemes at this time.
+	// Permit less-secure http and ws connections only in local environments.
+	$allowed_schemes = [ 'https', 'wss' ];
+	if ( wp_get_environment_type() === 'local' ) {
+		$allowed_schemes = [ ...$allowed_schemes, 'http', 'ws' ];
+	}
+	if ( ! in_array( $scheme, $allowed_schemes, true ) ) {
 		return '';
 	}
 
-	$port = ! empty( $components['port'] ) ? ( '' . $components['port'] ) : '';
+	$port = ! empty( $components['port'] ) ? ( ':' . $components['port'] ) : '';
 	return sprintf( '%s://%s%s', $scheme, $host, $port );
 }
 
@@ -167,14 +190,14 @@ function allow_wikimedia_origins( array $allowed_origins, string $policy_type ):
  */
 function set_connect_src_origins( array $allowed_origins, string $policy_type ): array {
 	if ( $policy_type === 'connect-src' ) {
-		return [ 'https://*.wikipedia.org', 'wss://*.wordpress.com' ];
+		return [ 'https://*.wikipedia.org', 'https://*.wikimedia.org', 'wss://*.wordpress.com' ];
 	}
 	return $allowed_origins;
 }
 
 /**
- * When the environment type is "local", add localhost origins to CSP headers
- * and permit proxying media requests through to deployed environment.
+ * When the environment type is "local", add localhost origins with commonly-
+ * used ports to CSP headers.
  *
  * @param string[] $allowed_origins List of origins to allow in this CSP.
  * @param string   $policy_type     CSP type.
@@ -196,16 +219,6 @@ function maybe_add_local_dev_origins( array $allowed_origins, string $policy_typ
 		] as $local_dev_origin ) {
 			$allowed_origins[] = $local_dev_origin;
 		}
-	}
-
-	if ( $policy_type === 'img-src' ) {
-		/**
-		 * Permit proxying images through to production or to preprod.
-		 *
-		 * @see https://docs.wpvip.com/how-tos/dev-env-add-media/#h-proxy-media-files
-		 */
-		$allowed_origins[] = 'https://wikimediafoundation.org';
-		$allowed_origins[] = 'https://wikimediafoundation-org-preprod.go-vip.net';
 	}
 
 	return $allowed_origins;
@@ -275,6 +288,7 @@ function add_csp_headers( array $headers ) {
 			'img-src',
 			'script-src',
 			'style-src',
+			'worker-src',
 		]
 	);
 
@@ -283,6 +297,7 @@ function add_csp_headers( array $headers ) {
 		"base-uri 'self'",
 		"form-action 'self'",
 		"frame-ancestors 'none'",
+		"object-src 'none'",
 		'block-all-mixed-content',
 	];
 
