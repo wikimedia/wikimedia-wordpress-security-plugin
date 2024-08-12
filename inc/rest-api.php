@@ -16,6 +16,7 @@ use WP_REST_Request;
  */
 function bootstrap() {
 	add_action( 'rest_request_before_callbacks', __NAMESPACE__ . '\\restrict_anonymous_rest_api_access', 10, 3 );
+	add_filter( 'wmf/security/rest_api/public_endpoint', __NAMESPACE__ . '\\permit_2fa_endpoint_access', 10, 2 );
 }
 
 /**
@@ -60,4 +61,22 @@ function restrict_anonymous_rest_api_access( $response, array $handler, WP_REST_
 	}
 
 	return $response;
+}
+
+/**
+ * Enable Two Factor plugin routes to be accessed without elevated authentication.
+ *
+ * 2FA endpoint has to be accessible to subscriber users in order for them to
+ * gain elevated permissions elsewhere. Without this 2FA credentials cannot
+ * be set or updated.
+ *
+ * @param bool            $is_allowed Whether the endpoint is publicly accessible, false by default.
+ * @param WP_REST_Request $request    Active REST Request object.
+ * @return bool Whether the anonymous request should be permitted.
+ */
+function permit_2fa_endpoint_access( bool $is_allowed, WP_REST_Request $request ): bool {
+	if ( strpos( $request->get_route(), '/two-factor/1.0' ) === 0 ) {
+		return true;
+	}
+	return $is_allowed;
 }
