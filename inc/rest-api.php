@@ -74,7 +74,7 @@ function restrict_anonymous_rest_api_access( $response, array $handler, WP_REST_
  * @param WP_REST_Request $request    Active REST Request object.
  * @return bool Whether the anonymous request should be permitted.
  */
-function permit_2fa_endpoint_access( bool $is_allowed, WP_REST_Request $request ) : bool {
+function permit_2fa_endpoint_access( bool $is_allowed, WP_REST_Request $request ): bool {
 	if ( strpos( $request->get_route(), '/two-factor/1.0' ) === 0 ) {
 		return true;
 	}
