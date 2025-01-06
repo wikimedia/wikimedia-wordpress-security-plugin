@@ -298,7 +298,7 @@ function add_csp_headers( array $headers ) {
 	$csp_invariate_policies = [
 		"base-uri 'self'",
 		"form-action 'self'",
-		"frame-ancestors 'none'",
+		"frame-ancestors 'self'",
 		"object-src 'none'",
 		'block-all-mixed-content',
 	];
