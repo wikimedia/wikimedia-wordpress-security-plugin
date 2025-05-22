@@ -297,7 +297,7 @@ function add_csp_headers( array $headers ) {
 	// These policies cannot be filtered.
 	$csp_invariate_policies = [
 		"base-uri 'self'",
-		"form-action 'self'",
+		"form-action 'self' https://donate.wikimedia.org",
 		"frame-ancestors 'self'",
 		"object-src 'none'",
 		'block-all-mixed-content',
