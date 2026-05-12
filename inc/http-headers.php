@@ -14,7 +14,6 @@ function bootstrap() {
 	add_action( 'send_headers', __NAMESPACE__ . '\\enable_strict_transport_security' ); // Ensure HTTPS.
 	add_action( 'send_headers', __NAMESPACE__ . '\\set_x_frame_options' ); // Prevent clickjacking by controlling frame embed options.
 	add_action( 'send_headers', __NAMESPACE__ . '\\set_x_content_type_options' ); // Option of X Content Type.
-	add_action( 'send_headers', __NAMESPACE__ . '\\set_referrer_policy' ); // Policy for referrer.
 	add_action( 'send_headers', __NAMESPACE__ . '\\set_permissions_policy' ); // Policy for permissions.
 }
 
@@ -38,13 +37,6 @@ function set_x_frame_options() {
  */
 function set_x_content_type_options() {
 	header( 'X-Content-Type-Options: nosniff' );
-}
-
-/**
- * Function for setting Referrer Policy. No referrer information.
- */
-function set_referrer_policy() {
-	header( 'Referrer-Policy: no-referrer' );
 }
 
 /**
