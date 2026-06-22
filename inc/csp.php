@@ -29,6 +29,7 @@ function bootstrap(): void {
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_video_service_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\maybe_add_local_dev_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_wikimedia_origins', 10, 2 );
+	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\allow_wikimedia_commons', 10, 2 );
 	add_filter( 'wmf/security/csp/allowed_origins', __NAMESPACE__ . '\\set_connect_src_origins', 10, 2 );
 	add_filter( 'wmf/security/csp/allow_unsafe_inline', __NAMESPACE__ . '\\allow_unsafe_inline_scripts_styles', 10, 2 );
 	add_filter( 'wmf/security/csp/allow_data_uris', __NAMESPACE__ . '\\allow_data_uri_inline_assets', 10, 2 );
@@ -182,6 +183,22 @@ function allow_wikimedia_origins( array $allowed_origins, string $policy_type ):
 }
 
 /**
+ * Allow resources necessary for Wikimedia Commons embeds.
+ *
+ * @param string[] $allowed_origins List of origins to allow in this CSP.
+ * @param string   $policy_type     CSP type.
+ * @return string[] Filtered policy allowed origins array.
+ */
+function allow_wikimedia_commons( array $allowed_origins, string $policy_type ): array {
+	if ( in_array( $policy_type, [ 'media-src' ], true ) ) {
+		$allowed_origins[] = 'https://commons.wikimedia.org';
+		$allowed_origins[] = 'https://upload.wikimedia.org';
+	}
+	return $allowed_origins;
+}
+
+
+/**
  * Define the 'connect-src' origins list.
  *
  * @param string[] $allowed_origins List of origins to allow in this CSP.
@@ -288,6 +305,7 @@ function add_csp_headers( array $headers ) {
 			'font-src',
 			'frame-src',
 			'img-src',
+			'media-src',
 			'script-src',
 			'style-src',
 			'worker-src',
