@@ -190,11 +190,14 @@ function allow_wikimedia_origins( array $allowed_origins, string $policy_type ):
  * @return string[] Filtered policy allowed origins array.
  */
 function allow_wikimedia_commons( array $allowed_origins, string $policy_type ): array {
-	if ( in_array( $policy_type, [ 'media-src' ], true ) ) {
-		$allowed_origins[] = 'https://commons.wikimedia.org';
-		$allowed_origins[] = 'https://upload.wikimedia.org';
+	if ( ! in_array( $policy_type, [ 'media-src' ], true ) ) {
+		return $allowed_origins;
 	}
-	return $allowed_origins;
+
+	$allowed_origins[] = 'https://commons.wikimedia.org';
+	$allowed_origins[] = 'https://upload.wikimedia.org';
+
+	return array_unique( $allowed_origins );
 }
 
 
