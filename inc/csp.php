@@ -178,16 +178,18 @@ function allow_video_service_origins( array $allowed_origins, string $policy_typ
  * @return string[] Filtered policy allowed origins array.
  */
 function allow_social_embed_origins( array $allowed_origins, string $policy_type ): array {
-	if ( in_array( $policy_type, [ 'frame-src', 'script-src' ], true ) ) {
-
-		// Allow embeds of Instagram posts and reels.
-		$allowed_origins[] = 'https://platform.instagram.com';
-		$allowed_origins[] = 'https://www.instagram.com';
-
-		// Allow Bluesky embeds
-		$allowed_origins[] = 'https://embed.bsky.app';
+	if ( ! in_array( $policy_type, [ 'frame-src', 'script-src' ], true ) ) {
+		return $allowed_origins;
 	}
-	return $allowed_origins;
+
+	// Allow embeds of Instagram posts and reels.
+	$allowed_origins[] = 'https://platform.instagram.com';
+	$allowed_origins[] = 'https://www.instagram.com';
+
+	// Allow Bluesky embeds
+	$allowed_origins[] = 'https://embed.bsky.app';
+
+	return array_unique( $allowed_origins );
 }
 
 /**
